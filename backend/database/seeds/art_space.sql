@@ -6,7 +6,7 @@ CREATE TABLE image_files (
     date date,
     filename text NOT NULL,
     description text NOT NULL,
-    path text NOT NULL,
+    path text NOT NULL
 );
 
 -- Seeding data
