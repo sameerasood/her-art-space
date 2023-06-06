@@ -1,6 +1,7 @@
 const morgan = require("morgan");
 const express = require("express");
 const multer = require("multer");
+const path = require("path");
 
 // Create express object
 const app = express();
@@ -23,11 +24,14 @@ app.post("/image", imageUpload.single("image"), (req, res) => {
 
 // Image Get Routes
 app.get("/image/:filename", (req, res) => {
-  res.json("/image/:filename api");
+  const { filename } = req.params;
+  const dirname = path.resolve();
+  const fullfilepath = path.join(dirname, "images/" + filename);
+  return res.sendFile(fullfilepath);
 });
 
 // Run express server
-const PORT = process.env.PORT;
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`app is running on port ${PORT}`);
 });
