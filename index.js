@@ -8,7 +8,14 @@ const app = express();
 
 // Create multer object
 const imageUpload = multer({
-  dest: "images",
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "images/");
+    },
+    filename: function (req, file, cb) {
+      cb(null, new Date().valueOf() + "_" + file.originalname);
+    },
+  }),
 });
 
 // Set middlewares
