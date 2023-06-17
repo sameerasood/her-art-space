@@ -24,10 +24,30 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // @TODO Add routes
+
 // Image Upload Routes
 app.post("/image", imageUpload.single("image"), (req, res) => {
-  console.log(req.file);
-  res.json("/image api");
+  const { filename, path } = req.file;
+
+  const filepath = path;
+
+  console.log("File path:", filepath);
+
+  const currentDate = new Date();
+
+  pool.query(
+    "INSERT INTO image_details (filename, filepath, date) VALUES ($1, $2, $3)",
+    [filename, filepath, currentDate],
+    (err, result) => {
+      if (err) {
+        console.error("Error saving image details:", err);
+        res.status(500).json({ error: "Failed to save image details" });
+      } else {
+        console.log("Image details saved successfully");
+        res.status(200).json({ message: "Image details saved successfully" });
+      }
+    }
+  );
 });
 
 // Image Get Routes
@@ -46,26 +66,6 @@ app.get("/images", (req, res) => {
     }
     res.status(200).json(results.rows);
   });
-});
-
-//post image details in database
-
-app.post("/upload", (req, res) => {
-  const { filename, filepath } = req.file; //acces file details
-
-  pool.query(
-    "INSERT INTO image_details (filename, filepath) VALUES ($1, $2)", //save details to database
-    [filename, filepath],
-    (err, result) => {
-      if (err) {
-        console.errot("Error saving image details:", err);
-        res.status(500).json({ error: "Failed to save image details" });
-      } else {
-        console.log("Image details saved successfully");
-        res.status(200).json({ message: "Image details saved successfully" });
-      }
-    }
-  );
 });
 
 // Run express server
