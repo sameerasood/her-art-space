@@ -29,15 +29,13 @@ app.use(morgan("dev"));
 app.post("/image", imageUpload.single("image"), (req, res) => {
   const { filename, path } = req.file;
 
-  const filepath = path;
-
-  console.log("File path:", filepath);
+  console.log("File path:", path);
 
   const currentDate = new Date();
 
   pool.query(
     "INSERT INTO image_details (filename, filepath, date) VALUES ($1, $2, $3)",
-    [filename, filepath, currentDate],
+    [filename, path, currentDate],
     (err, result) => {
       if (err) {
         console.error("Error saving image details:", err);
