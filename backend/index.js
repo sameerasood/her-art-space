@@ -27,15 +27,15 @@ app.use(morgan("dev"));
 
 // Image Upload Routes
 app.post("/image", imageUpload.single("image"), (req, res) => {
-  const { filename, path } = req.file;
+  const { filename, path, description } = req.file;
 
   console.log("File path:", path);
 
-  const currentDate = new Date();
+  let date = req.body.date || new Date();
 
   pool.query(
-    "INSERT INTO image_details (filename, filepath, date) VALUES ($1, $2, $3)",
-    [filename, path, currentDate],
+    "INSERT INTO image_details (filename, filepath, description, date) VALUES ($1, $2, $3, $4)",
+    [filename, path, description, date],
     (err, result) => {
       if (err) {
         console.error("Error saving image details:", err);
