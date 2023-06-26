@@ -27,7 +27,10 @@ app.use(morgan("dev"));
 
 // Image Upload Routes
 app.post("/image", imageUpload.single("image"), (req, res) => {
-  const { filename, path, description } = req.file;
+  const { filename, path } = req.file;
+  const description = req.body.description;
+
+  console.log("body request:", req.body);
 
   console.log("File path:", path);
 
