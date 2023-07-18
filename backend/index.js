@@ -11,10 +11,10 @@ const app = express();
 const imageUpload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "images/");
+      cb(null, path.join(__dirname, "/images/"));
     },
     filename: function (req, file, cb) {
-      cb(null, new Date().valueOf() + "_" + file.originalname);
+      cb(null, file.originalname);
     },
   }),
 });
@@ -22,20 +22,24 @@ const imageUpload = multer({
 // Set middlewares
 app.use(express.json());
 app.use(morgan("dev"));
+// app.use(express.static("images"));
 
 // @TODO Add routes
 
 // Image Upload Routes
 app.post("/image", imageUpload.single("image"), (req, res) => {
   const { filename, path } = req.file;
+  const description = req.body.description;
+
+  console.log("body request:", req.body);
 
   console.log("File path:", path);
 
-  const currentDate = new Date();
+  let date = new Date(req.body.date);
 
   pool.query(
-    "INSERT INTO image_details (filename, filepath, date) VALUES ($1, $2, $3)",
-    [filename, path, currentDate],
+    "INSERT INTO image_details (filename, filepath, description, date) VALUES ($1, $2, $3, $4)",
+    [filename, path, description, date],
     (err, result) => {
       if (err) {
         console.error("Error saving image details:", err);
