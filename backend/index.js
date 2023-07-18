@@ -11,7 +11,7 @@ const app = express();
 const imageUpload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "images/");
+      cb(null, path.join(__dirname, "/images/"));
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname);
@@ -22,6 +22,7 @@ const imageUpload = multer({
 // Set middlewares
 app.use(express.json());
 app.use(morgan("dev"));
+// app.use(express.static("images"));
 
 // @TODO Add routes
 
@@ -34,7 +35,7 @@ app.post("/image", imageUpload.single("image"), (req, res) => {
 
   console.log("File path:", path);
 
-  let date = req.body.date || new Date();
+  let date = new Date(req.body.date);
 
   pool.query(
     "INSERT INTO image_details (filename, filepath, description, date) VALUES ($1, $2, $3, $4)",

@@ -24,7 +24,7 @@ const Images = () => {
       const formData = new FormData();
       formData.append("image", selectedImage);
       formData.append("description", description);
-      formData.append("date", selectedDate);
+      formData.append("date", selectedDate.toISOString());
 
       fetch("/image", {
         method: "POST",
@@ -87,7 +87,7 @@ const Images = () => {
 
       {images.map((image) => (
         <div key={image.id}>
-          <img src={image.filepath} alt={image.filename} />
+          <img src={`/image/${image.filename}`} alt={image.filename} />
           <div>Date: {image.date}</div>
           <div>Description: {image.description}</div>
         </div>
